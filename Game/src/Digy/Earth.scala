@@ -17,7 +17,7 @@ class Earth(hardness: Float, location: Point2D, kind: Int, passable: Boolean) {
 }
 
 object Earth {
-  def apply(hard:Float, loc: Point2D, k: Int, p: Boolean){
-    new Earth(hard, loc, k, p)
+  def apply(loc: Point2D , k: Int): Earth ={
+    new Earth(10f, loc, k, true) 
   }
 }

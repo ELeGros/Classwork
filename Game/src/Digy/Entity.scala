@@ -2,7 +2,7 @@ package Digy
 
 class Entity(val location: Point2D, val bounds: (Float, Float), val direction: Vect2D, val grounded: Boolean) {
 
-  def update(wData: Map[Point2D, Earth]): Entity = {
+  def update(wData: scala.collection.Seq[Earth]): Entity = {
     if(!grounded){
     val bot = Point2D(location.x ,location.y - bounds._2/2)
     val dir = gravity(direction, Vect2D(0,-.5))
