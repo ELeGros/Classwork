@@ -1,0 +1,32 @@
+<MUDMap>
+	<room name = "Jail">
+		<description>
+			You are in a rusty old jail cell. It is dark, with the only real light coming from the crack
+			underneath a large wooden door to the north. The smells of piss and decay mingle, creating a sickening
+			aroma. As you contemplate these surroundings, you hear a set of footsteps, and decide that you should
+			think fast; this is a dark place.
+		</description>
+		<item name = "Bread" weight = "0.2">
+			<description>
+				You think it advisable not to eat this.
+			</description>
+		</item>
+		<exit direction = "North" destination = "Slums"/>
+	</room>
+	<room name = "Slums">
+		<description>
+			The slums are terrabad.
+		</description>
+		<item name = "Shovel" weight = "4.0">
+			<description>
+				The head of the shovel has been broken, creating a jagged edge.
+			</description>
+		</item>
+		<item name = "Blarg" weight = "4.0">
+			<description>
+				The head of the shovel has been broken, creating a jagged edge.
+			</description>
+		</item>
+		<exit direction = "South" destination = "Jail"/>
+	</room>
+</MUDMap>
