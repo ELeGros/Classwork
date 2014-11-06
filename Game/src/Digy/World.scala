@@ -18,11 +18,21 @@ object World {
 
   def generate(): Vector[Vector[Earth]] = {
     {
-      {for (i <- 1 to 64){ 
-        var v2 = {for(j <- 1 to 64) yield Earth(Random.nextInt(2))}.toVector
-        
-      } yield v2}.toVector
+      {for (i <- 1 to 64) yield{ 
+        {for(j <- 1 to 64) yield{
+          if(j > 44) Earth(1)
+          else Earth(Random.nextInt(2) + 1)}}.toVector     
+        }
+      }.toVector
+    }
   }
+  
+    def generate(xDim: Integer, yDim: Integer): Vector[Vector[Earth]] = {
+    {
+      {for (i <- 1 to xDim) yield{ 
+        {for(j <- 1 to yDim) yield Earth(Random.nextInt(2))}.toVector     
+      }}.toVector
+    }
   }
 
   def apply(ent: Vector[Entity]): World = {
