@@ -5,7 +5,7 @@ import scala.util.Random
 class World(private var wData: Vector[Vector[Earth]], private var entities: Vector[Entity]) {
   def update(): World = {
     var ents = for (e <- entities) yield e.update(wData)
-    World(wData, ents) 
+    World(wData, ents.toVector) 
   }
 
   def getEntities = entities
