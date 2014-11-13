@@ -18,7 +18,7 @@ class Render(var wData: World, xmin: Double, xmax: Double, ymin: Double, ymax: D
         wData.getData(i)(j).getKind match {
           case 2 => {
             val dx = (size.width * (i) / (64.0))
-            val dy = (size.height - size.height * (j) / (64.0))
+            val dy = (size.height - size.height * (j + 1) / (64.0))
             g.fill(new Rectangle2D.Double(dx, dy, sx, sy))
             //          println("DEBUG:  Should be drawing a rectangle here")
           }

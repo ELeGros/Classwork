@@ -20,19 +20,24 @@ class Entity(val location: Point2D, val bounds: (Float, Float), val direction: V
 //          println("DEBUG:   Current velocity: " + dir)
           var hit = -10.0
           while(hit < 0 && ((nl - fLoc).y >.05 || (nl - fLoc).x >.05 )) {
-            nl = nl + dir*1/640
- //           println("DEBUG:   Proposed new location: " + nl)
- //          println("DEBUG:   Going to: " + fLoc)
+            nl = nl + dir*1/10
+//            println("DEBUG:   Proposed new location: " + nl)
+//            println("DEBUG:   Going to: " + fLoc)
             var theta = 0.0
             while(hit<0 && theta < 2*math.Pi) {
-              if(!(wData((location.x + math.cos(theta)).toInt)((location.y + math.sin(theta)).toInt).isPassable())){ 
+              println("The block at: " + "(" + ((nl.x + math.cos(theta)*bounds._1/2) + ", " + ((nl.y + math.sin(theta)*bounds._2/2)) + ")" + " passable? : " + wData((nl.x + math.cos(theta)).toInt)((nl.y + math.sin(theta)).toInt).isPassable()))
+              if(!(wData((nl.x + math.cos(theta)*bounds._1/2).toInt)((nl.y + math.sin(theta)*bounds._2/2).toInt).isPassable())){ 
                 hit = theta
                 g = true
+                println("Hit at: (" + ((nl.x + math.cos(theta)*bounds._1/2).toInt + ", " + ((nl.y + math.sin(theta)*bounds._2/2).toInt) + ")"))
               }
-              theta+=.5
+              else {
+                theta+=.5
+                println("No hit at: (" + ((nl.x + math.cos(theta)*bounds._1/2).toInt + ", " + ((nl.y + math.sin(theta)*bounds._2/2).toInt) + ")"))
+              }
             }
           }     
-      Entity(nl, bounds, dir, g)
+      Entity(nl, bounds, dir, g) 
     } else this
   }
 
