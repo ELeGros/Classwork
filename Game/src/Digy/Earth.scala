@@ -1,6 +1,6 @@
 package Digy
 
-class Earth(hardness: Float, kind: Int, passable: Boolean) {
+class Earth(hardness: Float, kind: Int, passable: Boolean) extends Serializable{
   val bSize = 20f
   def getBreakTime(): Float = {
     hardness * 10f

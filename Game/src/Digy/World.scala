@@ -2,16 +2,22 @@ package Digy
 
 import scala.util.Random
 
-class World(private var wData: Vector[Vector[Earth]], private var entities: Vector[Entity]) {
+class World(private val wData: Vector[Vector[Earth]], private val entities: Vector[Entity]) extends Serializable{
   def update(): World = {
     var ents = for (e <- entities) yield e.update(wData)
     World(wData, ents.toVector)
   }
 
   def getEntities = entities
+  
   def getData = wData
+  def addEntity(e: Entity):World = {
+    new World(wData, entities :+ e)
+  }
   def sendUp(playerID: Int): World = {
     val players = entities.collect { case p: Player => p }
+    println(players.size)
+    println(entities.size, entities)
     val index = entities.indexOf(players(playerID))
     new World(wData, entities.updated(index, players(playerID).upPressed()))
   }

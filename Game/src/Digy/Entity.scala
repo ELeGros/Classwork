@@ -1,7 +1,8 @@
 package Digy
 
-class Entity(val location: Point2D, val bounds: (Float, Float), val direction: Vect2D, val grounded: Boolean) {
+abstract class Entity(val location: Point2D, val bounds: (Float, Float), val direction: Vect2D, val grounded: Boolean) extends Serializable{
 
+   def makeCopy (location: Point2D, direction: Vect2D, grounded: Boolean):Entity
    def gravity(dir: Vect2D, gravity: Vect2D): Vect2D = {
     if (grounded != true) {
       dir + gravity
@@ -37,15 +38,11 @@ class Entity(val location: Point2D, val bounds: (Float, Float), val direction: V
               }
             }
           }     
-      Entity(nl, bounds, dir, g) 
+      makeCopy(nl, dir, g) 
     } else this
   }
 
 
 }
 
-object Entity {
-  def apply(loc: Point2D, boundBox: (Float, Float), dir: Vect2D, grnd: Boolean): Entity = {
-    new Entity(loc, boundBox, dir, grnd)
-  }
-}
+

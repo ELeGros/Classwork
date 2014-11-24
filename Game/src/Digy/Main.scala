@@ -12,28 +12,23 @@ import scala.swing.MainFrame
 }
 
 object Main extends UnicastRemoteObject with RemoteServer {
-  val players = mutable.Buffer[RemotePlayer]()
+  val players = mutable.Buffer[(RemotePlayer,RemoteClient)]()
   private var world = World(Vector[Entity]())
   def main(args: Array[String]): Unit = {
-    java.rmi.registry.LocateRegistry.createRegistry(7078)
+    java.rmi.registry.LocateRegistry.createRegistry(1099)
     Naming.bind("Digy_Server", this)
     var pID = 0
-    var panel = new Render(world, 0, 640, 0, 640)
-    val frame = new MainFrame {
-      title = "Digy"
-      contents = panel
-    }
-    frame.open()
     while (true) {
       Thread.sleep(100)
       world = world.update
-      panel.setWorld(world)
-      panel.repaint
+      for((p,c) <- players) c.updateWorld(world)
     }
 
   }
 
   def sendUp(playerID: Int): Unit = {
+//    println(players.size)
+//    println(world.getEntities.size)
     world = world.sendUp(playerID)
     //TODO race condition :P
   }
@@ -54,6 +49,12 @@ object Main extends UnicastRemoteObject with RemoteServer {
   }
 
   def connect(client: RemoteClient): RemotePlayer = {
-    null
+    val p = Player(Point2D(34,55), (3f,3f), Vect2D(0,0), false)
+    world = world.addEntity(p)
+    println(world.getEntities)
+    val remoteP = new RemotePlayerImpl(players.size)
+    players+=(remoteP -> client)
+    
+    remoteP
   }
 }
