@@ -7,6 +7,7 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
     var cMass = 0.0
     var cPoint = Point3D(0, 0, 0)
     var xMin, xMax, yMin, yMax, zMin, zMax = 0.0
+    var size = 0.0
     def calcValues: Node = {
       if (ps.isEmpty) {
         cMass = left.cMass + right.cMass
@@ -30,6 +31,7 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
         }
         cPoint /= cMass
       }
+      size = (xMax - xMin) max (yMax - yMin) max (zMax - zMin)
       this
     }
   }
@@ -39,14 +41,30 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
     if (end - start <= MAX_PARTS) {
       Node(p.slice(start, end), -1, 0, null, null).calcValues
     } else {
-      //TODO figure out split dim (dim of largest spread)
-      //TODO find Median in that dim
-      //TODO recursively build children
+      val dim = findDim(p, start, end)
+      findMedian(p, start, end, dim)
+      val mid = (end - start) / 2
+      Node(Seq(), dim, p(mid).x(dim), buildTree(p, start, mid + 1), buildTree(p, mid + 1, end))
     }
   }
-  private def findMedian(p: Array[Particle], start: Int, end: Int, dim: Int): Unit = {
-    val median = (start + end) / 2
-    while (???) {
+
+  private def findDim(p: Array[Particle], s: Int, e: Int): Int = {
+    val xMin = p.view.map(_.x.x).min
+    val xMax = p.view.map(_.x.x).max
+    val yMin = p.view.map(_.x.y).min
+    val yMax = p.view.map(_.x.y).max
+    val zMin = p.view.map(_.x.z).min
+    val zMax = p.view.map(_.x.z).max
+    val seps = Array(xMax - xMin, yMax - yMin, zMax - zMin)
+    seps.indexOf(seps.max)
+  }
+
+  private def findMedian(p: Array[Particle], s: Int, e: Int, dim: Int): Unit = {
+    val median = (s + e) / 2
+    var start = s
+    var end = e
+    var done = false
+    while (!done) {
       val pivot = start //TODO pick better pivot
       //TODO swap piv to front if better
       var high = end - 1
@@ -63,7 +81,35 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
       val tmp = p(start)
       p(start) = p(high)
       p(high) = tmp
-      //TODO check if high above median, adjust start and end
+      if (high == median) {
+        done = true
+      } else if (high < median) {
+        start = high + 1
+      } else {
+        end = high
+      }
+    }
+  }
+  def calcForce(p: Particle, theta: Double): Vect3D = {
+    calcForceRecur(p, theta, root)
+  }
+  def calcForceRecur(p: Particle, theta: Double, n: Node): Vect3D = {
+    if (n.ps.isEmpty) { //Internal Node
+      val dist = p.x - n.cPoint
+      if (n.size > theta * dist.magnitude) {
+        calcForceRecur(p, theta, n.left) + calcForceRecur(p, theta, n.right)
+      } else {
+        val mag = (p.x - n.cPoint).magnitude max .05
+        (p.x - n.cPoint) * ((-1) * n.cMass / (mag * mag * mag))
+      }
+    } else { //Leaf Node
+      var a = Vect3D(0, 0, 0)
+      for (p2 <- n.ps) {
+        val mag = (p.x - p2.x).magnitude max .05
+        if (mag > 0)
+          a = a + (p.x - p2.x) * ((-1) * p2.mass / (mag * mag * mag))
+      }
+      a
     }
   }
 

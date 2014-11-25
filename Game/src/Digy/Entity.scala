@@ -17,13 +17,14 @@ abstract class Entity(val location: Point2D, val bounds: (Float, Float), val dir
           var g = false
           val dir = gravity(direction, new Vect2D(0, -.3))
           val fLoc = location + dir
-//          println("DEBUG:   Current location: " + location)
-//          println("DEBUG:   Current velocity: " + dir)
+          println("DEBUG:   Current location: " + location)
+          println("DEBUG:   Current velocity: " + dir)
+          if(dir.y < 0){
           var hit = -10.0
           while(hit < 0 && ((nl - fLoc).y >.05 || (nl - fLoc).x >.05 )) {
             nl = nl + dir*1/10
-//            println("DEBUG:   Proposed new location: " + nl)
-//            println("DEBUG:   Going to: " + fLoc)
+            println("DEBUG:   Proposed new location: " + nl)
+            println("DEBUG:   Going to: " + fLoc)
             var theta = 0.0
             while(hit<0 && theta < 2*math.Pi) {
               println("The block at: " + "(" + ((nl.x + math.cos(theta)*bounds._1/2) + ", " + ((nl.y + math.sin(theta)*bounds._2/2)) + ")" + " passable? : " + wData((nl.x + math.cos(theta)).toInt)((nl.y + math.sin(theta)).toInt).isPassable()))
@@ -38,7 +39,9 @@ abstract class Entity(val location: Point2D, val bounds: (Float, Float), val dir
               }
             }
           }     
+          }
       makeCopy(nl, dir, g) 
+          
     } else this
   }
 

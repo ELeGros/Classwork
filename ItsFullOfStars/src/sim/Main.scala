@@ -15,7 +15,7 @@ object Main {
 
   def main(args: Array[String]): Unit = {
     val parts = for(i <- 1 to 3000) yield(new Particle(Point3D(util.Random.nextGaussian()*10,util.Random.nextGaussian()*10,util.Random.nextGaussian()*10), Vect3D(0,0,0),util.Random.nextDouble(), util.Random.nextDouble()))
-    val sim = new Simulation(new GravityForce(0.01), parts.toBuffer)
+    val sim = new Simulation(new GravityTreeForce(0.01), parts.toBuffer)
     val simP = new SimPlot(sim, -10, 10, -10, 10)
     val frame = new MainFrame {
       title = "Sim"

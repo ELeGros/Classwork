@@ -15,3 +15,13 @@ class GravityForce(val dt: Double) extends TimeStepForce {
     }).seq.toIndexedSeq
   }
 }
+
+class GravityTreeForce(val dt: Double) extends TimeStepForce {
+  def calcAcceleration(s: Simulation): IndexedSeq[Vect3D] = {
+		val parts = s.getParticles
+    val tree = new GravityKDTree(parts)
+    (for (p1 <- parts.toIndexedSeq.par) yield {
+      tree.calcForce(p1, 0.3)
+    }).seq.toIndexedSeq
+  }
+}
