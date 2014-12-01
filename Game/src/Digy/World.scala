@@ -16,8 +16,8 @@ class World(private val wData: Vector[Vector[Earth]], private val entities: Vect
   }
   def sendUp(playerID: Int): World = {
     val players = entities.collect { case p: Player => p }
-    println(players.size)
-    println(entities.size, entities)
+//    println(players.size)
+//   println(entities.size, entities)
     val index = entities.indexOf(players(playerID))
     new World(wData, entities.updated(index, players(playerID).upPressed()))
   }

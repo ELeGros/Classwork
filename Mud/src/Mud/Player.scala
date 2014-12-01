@@ -8,45 +8,44 @@ import java.io.InputStreamReader
 import scala.util.control.Breaks.break
 import scala.util.control.Breaks.breakable
 
-class Player(private var inventory: List[Item], private var currentRoom: Room, private val input:InputStream, private val output:PrintStream) {
- 
+class Player(private var inventory: List[Item], private var currentRoom: Room, private val input: InputStream, private val output: PrintStream) {
+
   private var name = ""
   output.println("What is your name?")
   def getFromInventory(itemName: String): Option[Item] = {
     var count = 0
     for (item <- inventory) {
-//      println(item.name)
+      //      println(item.name)
       if (itemName.equals(item.name)) {
         inventory = inventory.patch(count, List(), 1)
-//        println("here")
+        //        println("here")
         return Some(item)
       }
-      count+=1
+      count += 1
     }
     println("That item is not in your inventory")
     None
   }
-  
-       val commands: Map[String, (Player, String, Vector[Room]) => Unit] = Map(
-      "look" -> lookHelper,
-      "drop" -> dropHelper,
-      "get" -> getHelper,
-      "inv" -> invHelper,
-      "North" -> directionHelper,
-      "South" -> directionHelper,
-      "East" -> directionHelper,
-      "West" -> directionHelper)
 
-  
-  def pollInput(rooms:Vector[Room]):Unit = {
-    if(input.available() != 0)
-    {
+  val commands: Map[String, (Player, String, Vector[Room]) => Unit] = Map(
+    "look" -> lookHelper,
+    "drop" -> dropHelper,
+    "get" -> getHelper,
+    "inv" -> invHelper,
+    "North" -> directionHelper,
+    "South" -> directionHelper,
+    "East" -> directionHelper,
+    "West" -> directionHelper)
+
+  def pollInput(rooms: Vector[Room]): Unit = {
+    if (input.available() != 0) {
       val buf = new Array[Byte](input.available())
       input.read(buf)
       val line = new String(buf).trim
-      if(name.isEmpty()){name = line
-        getRoom.printDescription(output)}
-      else commands(line.split(" ")(0))(this, line, rooms)
+      if (name.isEmpty()) {
+        name = line
+        getRoom.printDescription(output)
+      } else commands(line.split(" ")(0))(this, line, rooms)
       //TODO do stuff with line
     }
   }
@@ -55,11 +54,11 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     inventory = item :: inventory
     None
   }
-  
+
   def getRoom(): Room = {
     currentRoom
   }
-  
+
   def setRoom(room: Room): Unit = {
     currentRoom = room
   }
@@ -68,8 +67,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     output.println("INVENTORY:")
     for (obj <- inventory) output.println(obj.name)
   }
-  
-  
+
   def invHelper(p: Player, args: String, r: Vector[Room]): Unit = {
     p.printInventory()
   }
@@ -101,7 +99,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     var found = false
     breakable {
       for (ex <- e) {
-//        println("DEBUG: The current exit's direction is " + ex.direction)
+        //        println("DEBUG: The current exit's direction is " + ex.direction)
         if (ex.direction.equals(args.split(" ")(0).trim())) {
           p.setRoom(r(r.map(_.name).indexOf(ex.destination)))
           p.getRoom.printDescription(output)
@@ -117,7 +115,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
 }
 
 object Player {
-  def apply(inv: List[Item], currRoom: Room, is:InputStream, os:OutputStream): Player = {
+  def apply(inv: List[Item], currRoom: Room, is: InputStream, os: OutputStream): Player = {
     new Player(inv, currRoom, is, new PrintStream(os))
   }
 }
