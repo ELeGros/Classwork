@@ -28,6 +28,7 @@ object ClientMain extends UnicastRemoteObject with RemoteClient {
          case KeyPressed(_, Key.Up,_,_) => rPlayer.upPressed()
          case KeyPressed(_, Key.Left,_,_) => rPlayer.leftPressed()
          case KeyPressed(_, Key.Right,_,_) => rPlayer.rightPressed()
+         case KeyPressed(_, Key.BackSpace,_,_) => rPlayer.backPressed()
       }
       panel.focusable = true
       panel.requestFocus

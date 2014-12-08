@@ -15,6 +15,9 @@ class RemotePlayerImpl(playerID: Int) extends UnicastRemoteObject with RemotePla
   def rightPressed(): Unit = { 
     Main.sendRight(playerID)
   }
+  def backPressed(): Unit = {
+    Main.sendBack(playerID)
+  }
 }
 
 object RemotePlayerImpl {

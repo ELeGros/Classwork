@@ -51,8 +51,13 @@ object World {
         for (i <- 1 to 64) yield {
           {
             for (j <- 1 to 64) yield {
-              if (j > 44) Earth(1)
-              else Earth(Random.nextInt(2) + 1)
+              if(i==1 || j ==1 | i == 64 || j == 64) Earth(2)
+              else if (j > 44) Earth(1)
+              else {
+                val t = 50.0 * Random.nextDouble()
+                if(t<48)Earth(1)
+                else Earth(2)
+              }
             }
           }.toVector
         }

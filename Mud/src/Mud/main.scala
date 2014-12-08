@@ -23,7 +23,8 @@ object main {
         val connection = connectionQue.take()
         players+= Player(List[Item](), rooms(0), connection.getInputStream(), connection.getOutputStream())
       }
-      players.foreach(_.pollInput(rooms.toVector))
+      var copy = players
+      players.foreach(_.pollInput(rooms.toVector, copy))
 //      commands(input.split(" ")(0))(player, input, rooms.toVector)
 
     }

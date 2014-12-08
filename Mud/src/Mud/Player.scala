@@ -7,6 +7,7 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import scala.util.control.Breaks.break
 import scala.util.control.Breaks.breakable
+import collection.mutable
 
 class Player(private var inventory: List[Item], private var currentRoom: Room, private val input: InputStream, private val output: PrintStream) {
 
@@ -27,7 +28,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     None
   }
 
-  val commands: Map[String, (Player, String, Vector[Room]) => Unit] = Map(
+  val commands: Map[String, (Player, String, Vector[Room], mutable.Buffer[Player]) => Unit] = Map(
     "look" -> lookHelper,
     "drop" -> dropHelper,
     "get" -> getHelper,
@@ -35,9 +36,12 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     "North" -> directionHelper,
     "South" -> directionHelper,
     "East" -> directionHelper,
-    "West" -> directionHelper)
+    "West" -> directionHelper,
+    "Say" -> sayHelper,
+    "Tell" -> tellHelper
+    )
 
-  def pollInput(rooms: Vector[Room]): Unit = {
+  def pollInput(rooms: Vector[Room], players: mutable.Buffer[Player]): Unit = {
     if (input.available() != 0) {
       val buf = new Array[Byte](input.available())
       input.read(buf)
@@ -45,7 +49,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
       if (name.isEmpty()) {
         name = line
         getRoom.printDescription(output)
-      } else commands(line.split(" ")(0))(this, line, rooms)
+      } else commands(line.split(" ")(0))(this, line, rooms, players)
       //TODO do stuff with line
     }
   }
@@ -67,12 +71,25 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     output.println("INVENTORY:")
     for (obj <- inventory) output.println(obj.name)
   }
+  
+  def sayHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
+    for(c <- ps.filter(_.getRoom == p.getRoom)) c.output.println(args.substring(4))
+  }
 
-  def invHelper(p: Player, args: String, r: Vector[Room]): Unit = {
+  def tellHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
+    val c = args.split(" ")(1)
+    if(ps.indexOf(c) != - 1)
+    {
+      ps(ps.indexOf(c)).output.println(p.name + " Said: " + args.substring(4 + c.size))
+    }
+    else
+      output.println("That player doesn't exist!")
+  }
+  def invHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     p.printInventory()
   }
 
-  def getHelper(p: Player, args: String, r: Vector[Room]): Unit = {
+  def getHelper(p: Player, args: String, r: Vector[Room],ps : mutable.Buffer[Player]): Unit = {
     val item = p.getRoom().getItem(args.split(" ")(1))
     item match {
       case Some(i) => p.addToInventory(i)
@@ -80,7 +97,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     }
   }
 
-  def dropHelper(p: Player, args: String, r: Vector[Room]): Unit = {
+  def dropHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     val item = p.getFromInventory(args.split(" ")(1))
     println(item)
     item match {
@@ -89,11 +106,11 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     }
   }
 
-  def lookHelper(p: Player, args: String, r: Vector[Room]): Unit = {
+  def lookHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     p.getRoom.printDescription(output)
   }
 
-  def directionHelper(p: Player, args: String, r: Vector[Room]): Unit = {
+  def directionHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     val e = p.getRoom().exits
     println("DEBUG: Input == " + args)
     var found = false

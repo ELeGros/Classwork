@@ -6,13 +6,15 @@ import java.rmi.Naming
 import java.util.Timer
 import scala.swing.Swing
 import scala.swing.MainFrame
+import java.util.Stack
 
 @remote trait RemoteServer {
   def connect(client: RemoteClient): RemotePlayer
 }
 
 object Main extends UnicastRemoteObject with RemoteServer {
-  val players = mutable.Buffer[(RemotePlayer,RemoteClient)]()
+  val ws = new Stack[World]()
+  val players = mutable.Buffer[(RemotePlayer, RemoteClient)]()
   private var world = World(Vector[Entity]())
   def main(args: Array[String]): Unit = {
     java.rmi.registry.LocateRegistry.createRegistry(1099)
@@ -21,19 +23,20 @@ object Main extends UnicastRemoteObject with RemoteServer {
     while (true) {
       Thread.sleep(100)
       world = world.update
-      for((p,c) <- players) c.updateWorld(world)
+      ws.push(world)
+      for ((p, c) <- players) c.updateWorld(world)
     }
 
   }
 
   def sendUp(playerID: Int): Unit = {
-//    println(players.size)
-//    println(world.getEntities.size)
+    //    println(players.size)
+    //    println(world.getEntities.size)
     world = world.sendUp(playerID)
     //TODO race condition :P
   }
 
-  def sendDown(playerID: Int): Unit = { 
+  def sendDown(playerID: Int): Unit = {
     world = world.sendDown(playerID)
     //TODO race condition :P
   }
@@ -48,13 +51,18 @@ object Main extends UnicastRemoteObject with RemoteServer {
     //TODO race condition :P
   }
 
+  def sendBack(playerID: Int): Unit = {
+    for (i <- 1 to 10) ws.pop()
+    world = ws.pop()
+  }
+
   def connect(client: RemoteClient): RemotePlayer = {
-    val p = Player(Point2D(34,55), (3f,3f), Vect2D(0,0), false)
+    val p = Player(Point2D(34, 55), (3f, 3f), Vect2D(0, 0), false)
     world = world.addEntity(p)
     println(world.getEntities)
     val remoteP = new RemotePlayerImpl(players.size)
-    players+=(remoteP -> client)
-    
+    players += (remoteP -> client)
+
     remoteP
   }
 }

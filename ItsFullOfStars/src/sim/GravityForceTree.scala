@@ -9,8 +9,10 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
     var xMin, xMax, yMin, yMax, zMin, zMax = 0.0
     var size = 0.0
     def calcValues: Node = {
+//      val tmp = System.nanoTime()
       if (ps.isEmpty) {
         cMass = left.cMass + right.cMass
+//        println("mass = "+ cMass)
         cPoint = (left.cPoint * left.cMass + right.cPoint * right.cMass) / cMass
         xMin = left.xMin min right.xMin
         xMax = left.xMax max right.xMax
@@ -20,6 +22,7 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
         zMax = left.zMax max right.zMax
       } else {
         for (p <- ps) {
+//          println(p.mass)
           cMass += p.mass
           cPoint += p.x * p.mass
           if (p.x.x < xMin) xMin = p.x.x
@@ -32,6 +35,7 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
         cPoint /= cMass
       }
       size = (xMax - xMin) max (yMax - yMin) max (zMax - zMin)
+//      println((System.nanoTime() - tmp)*1e-9)
       this
     }
   }
@@ -43,8 +47,8 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
     } else {
       val dim = findDim(p, start, end)
       findMedian(p, start, end, dim)
-      val mid = (end - start) / 2
-      Node(Seq(), dim, p(mid).x(dim), buildTree(p, start, mid + 1), buildTree(p, mid + 1, end))
+      val mid = (end + start) / 2
+      Node(Seq(), dim, p(mid).x(dim), buildTree(p, start, mid + 1), buildTree(p, mid + 1, end)).calcValues
     }
   }
 
@@ -60,10 +64,12 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
   }
 
   private def findMedian(p: Array[Particle], s: Int, e: Int, dim: Int): Unit = {
+//    val tmp = System.nanoTime()
     val median = (s + e) / 2
     var start = s
     var end = e
     var done = false
+//    println(p.size)
     while (!done) {
       val pivot = start //TODO pick better pivot
       //TODO swap piv to front if better
@@ -100,7 +106,10 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
         calcForceRecur(p, theta, n.left) + calcForceRecur(p, theta, n.right)
       } else {
         val mag = (p.x - n.cPoint).magnitude max .05
-        (p.x - n.cPoint) * ((-1) * n.cMass / (mag * mag * mag))
+//        println(mag)
+        val r =(p.x - n.cPoint) * ((-1) * n.cMass / (mag * mag * mag))
+//        println(n.cMass)
+        r
       }
     } else { //Leaf Node
       var a = Vect3D(0, 0, 0)
