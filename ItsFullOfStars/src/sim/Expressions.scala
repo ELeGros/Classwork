@@ -57,6 +57,6 @@ class Expressions(s: String) {
 }
 
 object Expressions extends App {
-  val e = new Expressions("(3+5)*2-x")
-  println(e(1))
+  val e = new Expressions("x+x")
+  println(e(0))
 }

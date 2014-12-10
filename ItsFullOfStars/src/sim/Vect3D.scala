@@ -7,4 +7,5 @@ case class Vect3D(x: Double, y: Double, z: Double) {
    def /(s: Double): Vect3D = Vect3D(x/s, y/s, z/s)
    def magnitude:Double = math.sqrt(x*x + y*y + z*z)
    def dot(v : Vect3D): Double = x * v.x + y * v.y + z * v.z
+   override def toString():String = s"($x, $y, $z)"
 }

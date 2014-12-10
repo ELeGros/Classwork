@@ -2,22 +2,22 @@ package Digy
 
 import scala.util.Random
 
-class World(private val wData: Vector[Vector[Earth]], private val entities: Vector[Entity]) extends Serializable{
+class World(private val wData: Vector[Vector[Earth]], private val entities: Vector[Entity]) extends Serializable {
   def update(): World = {
     var ents = for (e <- entities) yield e.update(wData)
     World(wData, ents.toVector)
   }
 
   def getEntities = entities
-  
+
   def getData = wData
-  def addEntity(e: Entity):World = {
+  def addEntity(e: Entity): World = {
     new World(wData, entities :+ e)
   }
   def sendUp(playerID: Int): World = {
     val players = entities.collect { case p: Player => p }
-//    println(players.size)
-//   println(entities.size, entities)
+    //    println(players.size)
+    //   println(entities.size, entities)
     val index = entities.indexOf(players(playerID))
     new World(wData, entities.updated(index, players(playerID).upPressed()))
   }
@@ -25,7 +25,7 @@ class World(private val wData: Vector[Vector[Earth]], private val entities: Vect
   def sendDown(playerID: Int): World = {
     val players = entities.collect { case p: Player => p }
     val index = entities.indexOf(players(playerID))
-    new World(wData, entities.updated(index, players(playerID).downPressed())) 
+    new World(wData, entities.updated(index, players(playerID).downPressed()))
   }
 
   def sendLeft(playerID: Int): World = {
@@ -51,11 +51,11 @@ object World {
         for (i <- 1 to 64) yield {
           {
             for (j <- 1 to 64) yield {
-              if(i==1 || j ==1 | i == 64 || j == 64) Earth(2)
+              if (i == 1 || j == 1 | i == 64 || j == 64) Earth(2)
               else if (j > 44) Earth(1)
               else {
                 val t = 50.0 * Random.nextDouble()
-                if(t<48)Earth(1)
+                if (t < 48) Earth(1)
                 else Earth(2)
               }
             }

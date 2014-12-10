@@ -38,8 +38,7 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     "East" -> directionHelper,
     "West" -> directionHelper,
     "Say" -> sayHelper,
-    "Tell" -> tellHelper
-    )
+    "Tell" -> tellHelper)
 
   def pollInput(rooms: Vector[Room], players: mutable.Buffer[Player]): Unit = {
     if (input.available() != 0) {
@@ -71,25 +70,23 @@ class Player(private var inventory: List[Item], private var currentRoom: Room, p
     output.println("INVENTORY:")
     for (obj <- inventory) output.println(obj.name)
   }
-  
+
   def sayHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
-    for(c <- ps.filter(_.getRoom == p.getRoom)) c.output.println(args.substring(4))
+    for (c <- ps.filter(_.getRoom == p.getRoom)) c.output.println(p.name + " said: " + args.substring(4))
   }
 
   def tellHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     val c = args.split(" ")(1)
-    if(ps.indexOf(c) != - 1)
-    {
-      ps(ps.indexOf(c)).output.println(p.name + " Said: " + args.substring(4 + c.size))
-    }
-    else
+    if (!ps.filter(_.name == c).isEmpty) {
+      ps.filter(_.name == c)(0).output.println(p.name + " told you: " + args.substring(4 + c.size + 2))
+    } else
       output.println("That player doesn't exist!")
   }
   def invHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     p.printInventory()
   }
 
-  def getHelper(p: Player, args: String, r: Vector[Room],ps : mutable.Buffer[Player]): Unit = {
+  def getHelper(p: Player, args: String, r: Vector[Room], ps: mutable.Buffer[Player]): Unit = {
     val item = p.getRoom().getItem(args.split(" ")(1))
     item match {
       case Some(i) => p.addToInventory(i)

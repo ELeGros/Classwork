@@ -14,10 +14,17 @@ import swing._
 object Main {
 
   def main(args: Array[String]): Unit = {
-    val parts = for(i <- 1 to 10000) yield(new Particle(Point3D(util.Random.nextGaussian()*10,util.Random.nextGaussian()*10,util.Random.nextGaussian()*10), Vect3D(0,0,0),util.Random.nextDouble(), util.Random.nextDouble()))
-    val sim = new Simulation(new GravityTreeForce(0.01), parts.toBuffer)
+    val parts = for(i <- 1 to 1000) yield{ 
+      val r = 0.02+math.random*math.random*0.3
+      new Particle(Point3D(util.Random.nextGaussian()*10,util.Random.nextGaussian()*10,util.Random.nextGaussian()*10*0), Vect3D(0,0,0), r*r*r, r)
+    }
+//    val parts = Seq[Particle](new Particle(Point3D(1,0,0), Vect3D(0,0,0), 10.0, 0.5), new Particle(Point3D(-1,0,0), Vect3D(0,0,0), 10.0, 0.5), new Particle(Point3D(0,1,0), Vect3D(0,0,0), 10.0, .5))
+    println("Please enter What force you would like to use, providing a distance x")
+    val s = readLine
+    val e = new Expression(s)
+    val sim = new Simulation(new GravityTreeForce(0.001), parts.toBuffer, e)
     val simP = new SimPlot(sim, -10, 10, -10, 10)
-    val frame = new MainFrame {
+    val frame = new MainFrame { 
       title = "Sim"
       contents = simP
     }
@@ -25,6 +32,7 @@ object Main {
     while(true)
     {
 //    val start = System.nanoTime()
+//      Thread.sleep(10)
       sim.advance
 //    println((System.nanoTime() - start)*1e-9)
       simP.repaint()

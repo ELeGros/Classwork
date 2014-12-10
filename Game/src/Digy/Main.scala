@@ -52,8 +52,7 @@ object Main extends UnicastRemoteObject with RemoteServer {
   }
 
   def sendBack(playerID: Int): Unit = {
-    for (i <- 1 to 10) ws.pop()
-    world = ws.pop()
+    for (i <- 1 to 10) if (!ws.empty()) world = ws.pop()
   }
 
   def connect(client: RemoteClient): RemotePlayer = {

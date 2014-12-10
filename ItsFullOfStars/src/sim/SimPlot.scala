@@ -14,10 +14,10 @@ class SimPlot(sim: Simulation, xmin: Double, xmax: Double, ymin: Double, ymax: D
     for (part <- sim.getParticles) {
       val dx = (size.width * (part.x.x - xmin) / (xmax - xmin))
       val dy = (size.height - size.height * (part.x.y - ymin) / (ymax - ymin))
-      val sx = (part.radius * size.width / (xmax - xmin))*.1
-      val sy = (part.radius * size.height / (ymax - ymin))*.1
+      val sx = (part.radius * size.width / (xmax - xmin))
+      val sy = (part.radius * size.height / (ymax - ymin))
 //      if(s){println(dx - sx / 2, dy - sy / 2, sx, sy); s = false;}
-      g.fill(new Ellipse2D.Double(dx - sx / 2, dy - sy / 2, sx, sy))
+      g.fill(new Ellipse2D.Double(dx - sx, dy - sy, 2*sx, 2*sy))
     }
   }
 

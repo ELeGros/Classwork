@@ -17,22 +17,22 @@ object main {
     val r = (x \ "room")
     val rooms = { for (room <- r) yield Room(room) }
     val players = mutable.Buffer[Player]()
-    Future{connectionHandler}
+    Future { connectionHandler }
     while (true) {
-      while(!connectionQue.isEmpty()){
+      while (!connectionQue.isEmpty()) {
         val connection = connectionQue.take()
-        players+= Player(List[Item](), rooms(0), connection.getInputStream(), connection.getOutputStream())
+        players += Player(List[Item](), rooms(0), connection.getInputStream(), connection.getOutputStream())
       }
       var copy = players
       players.foreach(_.pollInput(rooms.toVector, copy))
-//      commands(input.split(" ")(0))(player, input, rooms.toVector)
+      //      commands(input.split(" ")(0))(player, input, rooms.toVector)
 
     }
   }
-  
+
   def connectionHandler() {
     val s = new ServerSocket(8040)
-    while(true) {
+    while (true) {
       val connect = s.accept()
       connectionQue.put(connect)
     }
