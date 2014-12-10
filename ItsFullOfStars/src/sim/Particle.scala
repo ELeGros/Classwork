@@ -38,8 +38,8 @@ object Particle {
     val cmv1perp = dnormal * (cmv1 dot dnormal)
     val cmv2perp = dnormal * (cmv2 dot dnormal)
 //    println("before: " + p1.mv + ", " + p2.mv + ", " + cmv1perp + ", " + cmv2perp)
-    p1.mv = p1.v - cmv1perp * 2
-    p2.mv = p2.v - cmv2perp * 2
+    p1.mv = p1.v - cmv1perp * 1.8
+    p2.mv = p2.v - cmv2perp * 1.8
 //    println("after: " + p1.mv + ", " + p2.mv)
   }
 }

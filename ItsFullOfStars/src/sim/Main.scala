@@ -14,14 +14,14 @@ import swing._
 object Main {
 
   def main(args: Array[String]): Unit = {
-    val parts = for(i <- 1 to 1000) yield{ 
+    val parts = for(i <- 1 to 100) yield{ 
       val r = 0.02+math.random*math.random*0.3
       new Particle(Point3D(util.Random.nextGaussian()*10,util.Random.nextGaussian()*10,util.Random.nextGaussian()*10*0), Vect3D(0,0,0), r*r*r, r)
     }
 //    val parts = Seq[Particle](new Particle(Point3D(1,0,0), Vect3D(0,0,0), 10.0, 0.5), new Particle(Point3D(-1,0,0), Vect3D(0,0,0), 10.0, 0.5), new Particle(Point3D(0,1,0), Vect3D(0,0,0), 10.0, .5))
-    println("Please enter What force you would like to use, providing a distance x")
+    println("Please enter What force you would like to use, providing a distance x, and mass of particles being m1 and m2")
     val s = readLine
-    val e = new Expression(s)
+    val e = new Expressions(s)
     val sim = new Simulation(new GravityTreeForce(0.001), parts.toBuffer, e)
     val simP = new SimPlot(sim, -10, 10, -10, 10)
     val frame = new MainFrame { 

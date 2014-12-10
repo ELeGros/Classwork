@@ -1,8 +1,8 @@
-package basics
+package sim
 
 import scala.util.parsing.combinator.JavaTokenParsers
  
-class Expression(e: String) extends JavaTokenParsers {
+class Expressions(e: String) extends JavaTokenParsers {
   trait Node extends ((Map[String, Double]) => Double)
 
   class NumberNode(label: Double) extends Node {
@@ -39,7 +39,7 @@ class Expression(e: String) extends JavaTokenParsers {
 }
 
 object Expression extends App {
-  val whatever = new Expression("4*(15*i*x+-7)/21+5")
+  val whatever = new Expressions("4*(15*i*x+-7)/21+5")
   println(whatever.root(Map("i" -> 1, "x" -> 2)))
 }
 

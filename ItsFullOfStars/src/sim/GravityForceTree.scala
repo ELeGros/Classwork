@@ -111,8 +111,8 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
       } else {
         val mag = (p.x - n.cPoint).magnitude max .05
         //        println(mag)
-        val r = (p.x - n.cPoint)*e(mag)/(mag)*n.cMass// * ((-1) * n.cMass / (mag * mag * mag))
-        //        println(n.cMass)
+        val r = (p.x - n.cPoint)*e.root(Map("x" -> mag, "m1" -> p.mass, "m2" -> n.cMass))// * ((-1) * n.cMass / (mag * mag * mag))
+//                println(r)
         r
       }
     } else { //Leaf Node
@@ -120,7 +120,8 @@ class GravityKDTree(initialParticles: Seq[Particle]) {
       for (p2 <- n.ps) {
         val mag = (p.x - p2.x).magnitude max .05
         if (mag > 0)
-          a = a + (p.x - p2.x) * e(mag)/(mag)*p2.mass//*((-1) * p2.mass / (mag * mag * mag))
+          a = a + (p.x - p2.x) * e.root(Map("x"->mag, "m1"->p.mass, "m2"-> p2.mass))//(mag)*p2.mass//*((-1) * p2.mass / (mag * mag * mag))
+      e.root(Map("x"->mag, "m1"->p.mass, "m2"-> p2.mass))
       }
       a
     }

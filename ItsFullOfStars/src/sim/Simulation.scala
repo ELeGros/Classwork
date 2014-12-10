@@ -6,7 +6,7 @@ class Simulation(val f: TimeStepForce, private val mp: mutable.Buffer[Particle],
   def numParticles = mp.length
   def getParticles = mp
   def advance: Unit = {
-    val tmp = System.nanoTime()
+//    val tmp = System.nanoTime()
     val acc = f.calcAcceleration(this, force)
     val pq = new PriorityQueue((a:PotentialCollision, b:PotentialCollision) => if(a.time > b.time) 1 else -1)
     //    println(acc(0))
